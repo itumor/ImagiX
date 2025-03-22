@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- intelligentimageupdater_v1_intelligentimageupdater.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

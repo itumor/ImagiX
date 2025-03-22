@@ -8,4 +8,7 @@ chmod +x kubebuilder && sudo mv kubebuilder /usr/local/bin/
 # Initialize Your Project
 Navigate to your working directory and run the following command to initialize a new Kubebuilder project:
 
-kubebuilder init --domain ImagiX.myk8soperator.com --repo github.com/itumor/ImagiX
+kubebuilder init --domain imagix.myk8soperator.com --repo github.com/itumor/ImagiX
+
+# Create an API
+kubebuilder create api --group intelligentimageupdater  --version v1 --kind IntelligentImageUpdater

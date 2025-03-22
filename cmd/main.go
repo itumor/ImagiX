@@ -36,6 +36,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
+
+	intelligentimageupdaterv1 "github.com/itumor/ImagiX/api/v1"
+	"github.com/itumor/ImagiX/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -47,6 +50,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
+	utilruntime.Must(intelligentimageupdaterv1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -180,7 +184,7 @@ func main() {
 		WebhookServer:          webhookServer,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "bbe93302.ImagiX.myk8soperator.com",
+		LeaderElectionID:       "bbe93302.imagix.myk8soperator.com",
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
 		// Manager is stopped, otherwise, this setting is unsafe. Setting this significantly
@@ -198,6 +202,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controller.IntelligentImageUpdaterReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "IntelligentImageUpdater")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	if metricsCertWatcher != nil {
